@@ -10,16 +10,18 @@ export function create_room(roomCode, roomHeadCount, roomHeadAmount) {
         roomHeadCount: roomHeadCount,
         roomHeadAmount: roomHeadAmount
     }
-    func_post_request(url, data, function (resp, error) {
-        if (error) {
-            console.log("Error: ", error)
-        } else {
-            if (resp.code != 200) {
-                reject(resp)
+    return new Promise((resolve, reject) => {
+        func_post_request(url, data, function (resp, error) {
+            if (error) {
+                console.log("Error: ", error)
             } else {
-                resolve(resp.data)                    
+                if (resp.code != 200) {
+                    reject(resp)
+                } else {
+                    resolve(resp.data)
+                }
             }
-        }
+        })
     })
 }
 
@@ -38,7 +40,7 @@ export function join_room(roomCode) {
                 if (resp.code != 200) {
                     reject(resp)
                 } else {
-                    resolve(resp.data)                    
+                    resolve(resp.data)
                 }
             }
         })
@@ -61,7 +63,7 @@ export function get_room_list() {
                 if (resp.code != 200) {
                     reject(resp)
                 } else {
-                    resolve(resp.data)                    
+                    resolve(resp.data)
                 }
             }
         })

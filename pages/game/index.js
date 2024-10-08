@@ -17,8 +17,8 @@ Page({
     diffCash: null,
     finCash: '',
     playerId: '',
+    playerName: '',
 
-    userinfo: null,
     roomData: null,
   },
 
@@ -30,8 +30,8 @@ Page({
 
     get_room_info(app.globalData.userinfo.curRoomCode).then(respData => {
       this.setData({
-        userinfo: getApp().globalData.userinfo,
         roomData: respData,
+        playerName: getApp().globalData.userinfo.name
       });
     }).catch(error => {
       console.log(error);
@@ -48,11 +48,22 @@ Page({
 
   // 切换对局信息/对局日志
   onTabsChange(event) {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+
+    const roomCode = app.globalData.userinfo.curRoomCode
     if (event.detail.value == 1) {
       get_room_operation_log(roomCode, 'ALL').then(respData => {
         this.setData({
           roomOperationLogList: respData,
+        });
+      }).catch(error => {
+        console.log(error);
+      })
+    } else {
+      get_room_info(roomCode).then(respData => {
+        this.setData({
+          roomData: respData,
+          playerName: getApp().globalData.userinfo.name
         });
       }).catch(error => {
         console.log(error);
@@ -62,7 +73,9 @@ Page({
 
   // 监听logStatusChange事件，切换日志标签，展示对应的日志
   logStatusChange(e) {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+
+    const roomCode = app.globalData.userinfo.curRoomCode
     if (e.detail.value == 0) {
       get_room_operation_log(roomCode, 'ALL').then(respData => {
         this.setData({
@@ -113,12 +126,15 @@ Page({
     this.setData({ [dialogKey]: false });
   },
   add2() {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+    
+    const roomCode = app.globalData.userinfo.curRoomCode
     add2(roomCode).then(respData => {
-      get_room_info(this.data.userinfo.curRoomCode).then(respData => {
+      get_room_info(roomCode).then(respData => {
         this.setData({
           showAdd2Confirm: false,
           roomData: respData,
+          playerName: getApp().globalData.userinfo.name
         });
       }).catch(error => {
         console.log(error);
@@ -143,12 +159,15 @@ Page({
     this.setData({ [dialogKey]: false });
   },
   sub2() {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+    
+    const roomCode = app.globalData.userinfo.curRoomCode
     sub2(roomCode).then(respData => {
-      get_room_info(this.data.userinfo.curRoomCode).then(respData => {
+      get_room_info(roomCode).then(respData => {
         this.setData({
           showSub2Confirm: false,
           roomData: respData,
+          playerName: getApp().globalData.userinfo.name
         });
       }).catch(error => {
         console.log(error);
@@ -166,7 +185,9 @@ Page({
   
   // 锁定/解锁房间 
   roomStatusChange() {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+    
+    const roomCode = app.globalData.userinfo.curRoomCode
     const roomStatus = this.data.roomStatus == '0' ? '1' : '0'
     if (roomStatus == '1') {
       lock_room(roomCode).then(respData => {
@@ -216,12 +237,15 @@ Page({
     });
   },
   onConfirm: function () {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+    
+    const roomCode = app.globalData.userinfo.curRoomCode
     submit_fin_cash(roomCode, this.data.finCash).then(respData => {
       this.setData({ popupVisible: false });
-      get_room_info(this.data.userinfo.curRoomCode).then(respData => {
+      get_room_info(roomCode).then(respData => {
         this.setData({
           roomData: respData,
+          playerName: getApp().globalData.userinfo.name
         });
       }).catch(error => {
         console.log(error);
@@ -248,7 +272,9 @@ Page({
     this.setData({ [dialogKey]: false });
   },
   calcAmount() {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+    
+    const roomCode = app.globalData.userinfo.curRoomCode
     if (roomCode == undefined) {
       Message.info({
         context: this,
@@ -259,10 +285,11 @@ Page({
       });
     }
     calculate_amount(roomCode).then(respData => {
-      get_room_info(this.data.userinfo.curRoomCode).then(respData => {
+      get_room_info(roomCode).then(respData => {
         this.setData({
           showCalcAmountConfirm: false,
           roomData: respData,
+          playerName: getApp().globalData.userinfo.name
         });
       }).catch(error => {
         console.log(error);
@@ -288,12 +315,15 @@ Page({
     this.setData({ [dialogKey]: false, playerId: '' });
   },
   deletePlayer(e) {
-    const roomCode = this.data.userinfo.curRoomCode
+    const app = getApp()
+    
+    const roomCode = app.globalData.userinfo.curRoomCode
     delete_player(roomCode, this.data.playerId).then(respData => {
-      get_room_info(this.data.userinfo.curRoomCode).then(respData => {
+      get_room_info(roomCode).then(respData => {
         this.setData({
           showDeletePlayerConfirm: false,
           roomData: respData,
+          playerName: getApp().globalData.userinfo.name
         });
       }).catch(error => {
         console.log(error);

@@ -8,7 +8,7 @@
 					<t-input
 					 label="我的名称："
 					 type="nickname"
-					 value="{{userinfo.name}}"
+					 value="{{playerName}}"
 					 bind:change="changeName"
 					/>
 					<view class="room-info-item">
@@ -115,7 +115,7 @@
 					<block wx:for="{{roomData.roomDetailList}}" wx:key="id">
 						<t-dialog
 						 visible="{{showDeletePlayerConfirm}}"
-						 content="是否确认要玩家信息"
+						 content="是否确认要玩家【 {{item.playerName}} 】信息"
 						 confirm-btn="{{ { content: '确认', variant: 'base', theme: 'info' } }}"
 						 cancel-btn="取消"
 						 bind:confirm="deletePlayer"

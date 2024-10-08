@@ -100,13 +100,19 @@ Page({
       });
     } else {
       create_room(this.data.popupRoomCode, roomHeadCount, roomHeadAmount).then(respData => {
-        get_room_list().then(respData => {
-          this.setData({
-            popupVisible: false,
-            "roomEditInfo.roomHeadCount": '',
-            "roomEditInfo.roomHeadAmount": '',
-            roomInfoList: respData,
-          });
+        const roomCode = respData
+        join_room(roomCode).then(respData => {
+          getApp().globalData.userinfo.curRoomCode = roomCode;
+          get_room_list().then(respData => {
+            this.setData({
+              popupVisible: false,
+              "roomEditInfo.roomHeadCount": '',
+              "roomEditInfo.roomHeadAmount": '',
+              roomInfoList: respData,
+            });
+          }).catch(error => {
+            console.log(error);
+          })
         }).catch(error => {
           console.log(error);
         })
