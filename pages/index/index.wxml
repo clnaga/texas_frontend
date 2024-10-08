@@ -1,0 +1,9 @@
+<!--index.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+	<view class="container">
+		<view class="button-example">
+			<t-button theme="primary" size="large" bind:tap="createRoom">新建房间</t-button>
+		</view>
+	</view>
+</scroll-view>
+

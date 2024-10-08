@@ -1,0 +1,98 @@
+<!--index.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+	<t-message id="t-message" />
+	<t-toast id="t-toast" />
+
+	<view class="room-header">
+		<view class="example-search">
+			<t-search placeholder="房间编码/房主名称" shape="round" bind:blur="searchRoom" />
+		</view>
+		<view class="room-button">
+			<t-button bind:tap="showPopup">创建房间</t-button>
+			<t-popup
+			 visible="{{popupVisible}}"
+			 placement="center"
+			 usingCustomNavbar
+			 bind:visible-change="onVisibleChange"
+			>
+				<view class="popup-container">
+					<t-input
+					 label="房间人数"
+					 placeholder="请输入内容"
+					 value="{{roomEditInfo.roomHeadCount}}"
+					 bind:blur="onRoomHeadCountBlur"
+					/>
+					<t-input
+					 label="人头金额"
+					 placeholder="请输入内容"
+					 value="{{roomEditInfo.roomHeadAmount}}"
+					 bind:blur="onRoomHeadAmountBlur"
+					/>
+					<t-button variant="primary" block bind:tap="onConfirm">确定
+					</t-button>
+				</view>
+			</t-popup>
+
+			<t-button bind:tap="showJoinRoomPopup">加入房间</t-button>
+			<t-popup
+			 visible="{{popupJoinRoomVisible}}"
+			 placement="center"
+			 usingCustomNavbar
+			 bind:visible-change="onJoinRoomVisibleChange"
+			>
+				<view class="popup-container">
+					<t-input
+					 label="房间编码"
+					 placeholder="请输入内容"
+					 value="{{roomEditInfo.roomCode}}"
+					 bind:blur="onRoomCodeBlur"
+					/>
+					<t-button variant="primary" block bind:tap="onJoinRoomConfirm">确定
+					</t-button>
+				</view>
+			</t-popup>
+		</view>
+	</view>
+
+	<view class="room-container">
+		<view class="score-board-header">
+			<view class="score-board-text1">
+				<text >房间编码</text>
+			</view>
+			<view class="score-board-text2">
+				<text >膨胀比例</text>
+			</view>
+			<view class="score-board-text1">
+				<text >人数</text>
+			</view>
+			<view class="score-board-text2">
+				<text >人头金额</text>
+			</view>
+			<view class="score-board-text1">
+				<text >是否关闭</text>
+			</view>
+		</view>
+		<view class="score-board-body">
+			<block wx:for="{{roomInfoList}}" wx:key="id">
+				<view class="score-board-item" bind:tap="showPopup" data-item="{{item}}">
+					<view class="score-board-text2">
+						<text >{{item.code}}</text>
+					</view>
+					<view class="score-board-text1">
+						<text >{{item.chipExchangeRate}}</text>
+					</view>
+					<view class="score-board-text2">
+						<text >{{item.headCount}}</text>
+					</view>
+					<view class="score-board-text1">
+						<text >{{item.headAmount}}</text>
+					</view>
+					<view class="score-board-text2">
+						<text >{{item.closeFlag == 1 ? '是' : '否'}}</text>
+					</view>
+				</view>
+			</block>
+		</view>
+	</view>
+</scroll-view>
+

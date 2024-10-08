@@ -1,0 +1,174 @@
+<!--index.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+	<t-message id="t-message" />
+	<view>
+		<t-tabs defaultValue="0" bind:change="onTabsChange" t-class="custom-tabs">
+			<t-tab-panel label="当前对局信息" value="0">
+				<view class="room-bar">
+					<t-input
+					 label="我的名称："
+					 type="nickname"
+					 value="{{userinfo.name}}"
+					 bind:change="changeName"
+					/>
+					<view class="room-info-item">
+						<t-input label="房间号：" value="{{roomData.code}}" disabled />
+						<t-input label="差值：" value="{{roomData.diffCash}}" disabled />
+					</view>
+					<view class="room-opt-btn">
+						<t-button
+						 theme="primary"
+						 variant="outline"
+						 data-key="showAdd2Confirm"
+						 bind:tap="showAdd2Dialog"
+						>
+							+2
+						</t-button>
+						<t-dialog
+						 visible="{{showAdd2Confirm}}"
+						 content="是否确认要 +2"
+						 confirm-btn="{{ { content: '确认', variant: 'base', theme: 'info' } }}"
+						 cancel-btn="取消"
+						 bind:confirm="add2"
+						 bind:close="closeAdd2Dialog"
+						/>
+
+						<t-button
+						 theme="primary"
+						 variant="outline"
+						 data-key="showSub2Confirm"
+						 bind:tap="showSub2Dialog"
+						>
+							-2
+						</t-button>
+						<t-dialog
+						 visible="{{showSub2Confirm}}"
+						 content="是否确认要 -2"
+						 confirm-btn="{{ { content: '确认', variant: 'base', theme: 'info' } }}"
+						 cancel-btn="取消"
+						 bind:confirm="sub2"
+						 bind:close="closeSub2Dialog"
+						/>
+
+						<t-button type="primary" bind:tap="roomStatusChange">
+							{{roomStatus === "0" ? '锁定房间' : '解锁房间'}}
+						</t-button>
+					</view>
+					<view class="room-opt-btn">
+						<t-button type="primary" bind:tap="showPopup">输入当前筹码</t-button>
+						<t-popup
+						 visible="{{popupVisible}}"
+						 placement="center"
+						 usingCustomNavbar
+						 bind:visible-change="onVisibleChange"
+						>
+							<view class="popup-container">
+								<t-input
+								 label="当前筹码"
+								 placeholder="请输入当前筹码"
+								 value="{{finCash}}"
+								 bind:blur="onFinCashBlur"
+								/>
+								<t-button variant="primary" block bind:tap="onConfirm">确定</t-button>
+							</view>
+						</t-popup>
+
+						<t-button
+						 theme="primary"
+						 variant="outline"
+						 data-key="showCalcAmountConfirm"
+						 bind:tap="showCalcAmountDialog"
+						>
+							计算分摊
+						</t-button>
+						<t-dialog
+						 visible="{{showCalcAmountConfirm}}"
+						 content="{{calcAmountContent}}"
+						 confirm-btn="{{ { content: '确认', variant: 'base', theme: 'info' } }}"
+						 cancel-btn="取消"
+						 bind:confirm="calcAmount"
+						 bind:close="closeCalcAmountDialog"
+						/>
+					</view>
+				</view>
+				<view class="score-board-header">
+					<view class="score-board-text1">
+						<text >姓名</text>
+					</view>
+					<view class="score-board-text2">
+						<text >总计分</text>
+					</view>
+					<view class="score-board-text1">
+						<text >当前筹码</text>
+					</view>
+					<view class="score-board-text2">
+						<text >结算计分</text>
+					</view>
+					<view class="score-board-text1">
+						<text >结算金额</text>
+					</view>
+					<view class="score-board-text2">
+						<text >myb金额</text>
+					</view>
+				</view>
+				<view class="score-board-body">
+					<block wx:for="{{roomData.roomDetailList}}" wx:key="id">
+						<t-dialog
+						 visible="{{showDeletePlayerConfirm}}"
+						 content="是否确认要玩家信息"
+						 confirm-btn="{{ { content: '确认', variant: 'base', theme: 'info' } }}"
+						 cancel-btn="取消"
+						 bind:confirm="deletePlayer"
+						 bind:close="closeDeletePlayerDialog"
+						/>
+						<view
+						 class="score-board-item"
+						 bindlongpress="showDeletePlayerDialog"
+						 data-item="{{item}}"
+						 data-key="showDeletePlayerConfirm"
+						>
+							<view class="score-board-text1">
+								<text >{{item.playerName}}</text>
+							</view>
+							<view class="score-board-text2">
+								<text >{{item.totalCash}}</text>
+							</view>
+							<view class="score-board-text1">
+								<text >{{item.finCash}}</text>
+							</view>
+							<view class="score-board-text2">
+								<text >{{item.cashOff}}</text>
+							</view>
+							<view class="score-board-text1">
+								<text >{{item.apportionedAmount}}</text>
+							</view>
+							<view class="score-board-text2">
+								<text >{{item.weightedAmount}}</text>
+							</view>
+						</view>
+					</block>
+				</view>
+			</t-tab-panel>
+			<t-tab-panel label="对局日志" value="1">
+				<t-tabs defaultValue="0" theme="tag" bind:change="logStatusChange">
+					<t-tab-panel label="全部" value="0">
+						<block wx:for="{{roomOperationLogList}}" wx:key="id">
+							<text style="display: block;">{{item.createTime}} {{item.playerName}} {{item.operationTypeName}}</text>
+						</block>
+					</t-tab-panel>
+					<t-tab-panel label="房间操作" value="1">
+						<block wx:for="{{roomOperationLogList}}" wx:key="id">
+							<text style="display: block;">{{item.createTime}} {{item.playerName}} {{item.operationTypeName}}</text>
+						</block>
+					</t-tab-panel>
+					<t-tab-panel label="玩家操作" value="2">
+						<block wx:for="{{roomOperationLogList}}" wx:key="id">
+							<text style="display: block;">{{item.createTime}} {{item.playerName}} {{item.operationTypeName}}</text>
+						</block>
+					</t-tab-panel>
+				</t-tabs>
+			</t-tab-panel>
+		</t-tabs>
+	</view>
+</scroll-view>
+

@@ -1,0 +1,16 @@
+<!--index.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+	<view class="container">
+		<view class="nickname-wrapper" hover-stop-propagation="true">
+			<text class="nickname-label">昵称</text>
+			<input
+			 type="nickname"
+			 class="nickname-input"
+			 placeholder="请输入昵称"
+			 bind:change="changeName"
+			 value="{{userinfo.name}}"
+			/>
+		</view>
+	</view>
+</scroll-view>
+
