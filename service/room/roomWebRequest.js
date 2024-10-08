@@ -48,11 +48,11 @@ export function join_room(roomCode) {
 }
 
 // 获取房间信息
-export function get_room_list() {
+export function get_room_list(page) {
     const url = reqUrl.urlGetRoomList
     const data = {
-        page: 1,
-        pageSize: 500
+        page: page,
+        pageSize: 10
     }
     return new Promise((resolve, reject) => {
         func_post_request(url, data, function (resp, error) {

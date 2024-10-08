@@ -9,6 +9,8 @@ Page({
     popupJoinRoomVisible: false,
 
     popupRoomCode: '',
+    pageNo: 1,
+    maxPageNo: 4,
 
     roomInfoList: [],
     roomEditInfo: {
@@ -21,7 +23,7 @@ Page({
   // 调用自定义tabbar的init函数，使页面与tabbar激活状态保持一致
   onShow() {
     this.getTabBar().init();
-    get_room_list().then(respData => {
+    get_room_list(1).then(respData => {
       this.setData({
         roomInfoList: respData,
       });
@@ -49,12 +51,12 @@ Page({
   //
   // 创建/修改房间
   //
-  onRoomCodeBlur(e) {
+  onRoomCodeChange(e) {
     this.setData({
       "roomEditInfo.roomCode": e.detail.value
     })
   },
-  onRoomHeadCountBlur(e) {
+  onRoomHeadCountChange(e) {
     this.setData({
       "roomEditInfo.roomHeadCount": e.detail.value
     })
@@ -102,16 +104,13 @@ Page({
       create_room(this.data.popupRoomCode, roomHeadCount, roomHeadAmount).then(respData => {
         const roomCode = respData
         join_room(roomCode).then(respData => {
+          this.setData({
+            popupVisible: false,
+            "roomEditInfo.roomCode": '',
+          });
           getApp().globalData.userinfo.curRoomCode = roomCode;
-          get_room_list().then(respData => {
-            this.setData({
-              popupVisible: false,
-              "roomEditInfo.roomHeadCount": '',
-              "roomEditInfo.roomHeadAmount": '',
-              roomInfoList: respData,
-            });
-          }).catch(error => {
-            console.log(error);
+          wx.switchTab({
+            url: '/pages/game/index',
           })
         }).catch(error => {
           console.log(error);
@@ -129,7 +128,7 @@ Page({
   },
 
   // 加入房间
-  onRoomHeadAmountBlur(e) {
+  onRoomHeadAmountChange(e) {
     this.setData({
       "roomEditInfo.roomHeadAmount": e.detail.value
     })
@@ -174,6 +173,26 @@ Page({
         });
       })
     }
+  },
+
+  // 步进器
+  onPageNoChange(e) {
+    const { value } = e.detail;
+    this.setData({
+      pageNo: value,
+    });
+    get_room_list(value).then(respData => {
+      if (respData.length < 10) {
+        this.setData({
+          maxPageNo: value
+        });
+      }
+      this.setData({
+        roomInfoList: respData,
+      });
+    }).catch(error => {
+      console.log(error);
+    })
   },
 
 })

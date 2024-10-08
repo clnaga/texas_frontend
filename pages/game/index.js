@@ -221,7 +221,7 @@ Page({
   },
   
   // 输入当前筹码
-  onFinCashBlur(e) {
+  onFinCashChange(e) {
     this.setData({
       "finCash": e.detail.value
     })

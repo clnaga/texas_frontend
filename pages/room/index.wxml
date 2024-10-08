@@ -20,13 +20,13 @@
 					 label="房间人数"
 					 placeholder="请输入内容"
 					 value="{{roomEditInfo.roomHeadCount}}"
-					 bind:blur="onRoomHeadCountBlur"
+					 bind:change="onRoomHeadCountChange"
 					/>
 					<t-input
 					 label="人头金额"
 					 placeholder="请输入内容"
 					 value="{{roomEditInfo.roomHeadAmount}}"
-					 bind:blur="onRoomHeadAmountBlur"
+					 bind:change="onRoomHeadAmountChange"
 					/>
 					<t-button variant="primary" block bind:tap="onConfirm">确定
 					</t-button>
@@ -45,7 +45,7 @@
 					 label="房间编码"
 					 placeholder="请输入内容"
 					 value="{{roomEditInfo.roomCode}}"
-					 bind:blur="onRoomCodeBlur"
+					 bind:change="onRoomCodeChange"
 					/>
 					<t-button variant="primary" block bind:tap="onJoinRoomConfirm">确定
 					</t-button>
@@ -92,6 +92,16 @@
 					</view>
 				</view>
 			</block>
+		</view>
+		<view class="stepper-example">
+			<t-stepper
+			 value="{{pageNo}}"
+			 size="large"
+			 theme="filled"
+			 min="1"
+			 max="{{maxPageNo}}"
+			 bind:change="onPageNoChange"
+			/>
 		</view>
 	</view>
 </scroll-view>

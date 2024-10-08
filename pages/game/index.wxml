@@ -67,7 +67,7 @@
 								 label="当前筹码"
 								 placeholder="请输入当前筹码"
 								 value="{{finCash}}"
-								 bind:blur="onFinCashBlur"
+								 bind:change="onFinCashChange"
 								/>
 								<t-button variant="primary" block bind:tap="onConfirm">确定</t-button>
 							</view>
