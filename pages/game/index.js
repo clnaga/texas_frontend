@@ -18,6 +18,7 @@ Page({
     finCash: '',
     playerId: '',
     playerName: '',
+    logOperationType: 0,
 
     roomData: null,
   },
@@ -52,7 +53,14 @@ Page({
 
     const roomCode = app.globalData.userinfo.curRoomCode
     if (event.detail.value == 1) {
-      get_room_operation_log(roomCode, 'ALL').then(respData => {
+      var logOperationTypeCode = 'ALL'
+      const logOperationType = this.data.logOperationType
+      if (logOperationType == 1) {
+        logOperationTypeCode = 'ROOM_OPERATION'
+      } else if (logOperationType == 2) {
+        logOperationTypeCode = 'PLAYER_OPERATION'
+      }
+      get_room_operation_log(roomCode, logOperationTypeCode).then(respData => {
         this.setData({
           roomOperationLogList: respData,
         });
@@ -76,31 +84,21 @@ Page({
     const app = getApp()
 
     const roomCode = app.globalData.userinfo.curRoomCode
-    if (e.detail.value == 0) {
-      get_room_operation_log(roomCode, 'ALL').then(respData => {
-        this.setData({
-          roomOperationLogList: respData,
-        });
-      }).catch(error => {
-        console.log(error);
-      })
-    } else if (e.detail.value == 1) {
-      get_room_operation_log(roomCode, 'ROOM_OPERATION').then(respData => {
-        this.setData({
-          roomOperationLogList: respData,
-        });
-      }).catch(error => {
-        console.log(error);
-      })
-    } else {
-      get_room_operation_log(roomCode, 'PLAYER_OPERATION').then(respData => {
-        this.setData({
-          roomOperationLogList: respData,
-        });
-      }).catch(error => {
-        console.log(error);
-      })
+    const logOperationType = e.detail.value
+    var logOperationTypeCode = 'ALL'
+    if (logOperationType == 1) {
+      logOperationTypeCode = 'ROOM_OPERATION'
+    } else if (logOperationType == 2) {
+      logOperationTypeCode = 'PLAYER_OPERATION'
     }
+    get_room_operation_log(roomCode, logOperationTypeCode).then(respData => {
+      this.setData({
+        roomOperationLogList: respData,
+        logOperationType: logOperationType
+      });
+    }).catch(error => {
+      console.log(error);
+    })
   },
 
   // 改变名称
