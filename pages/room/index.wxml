@@ -69,7 +69,7 @@
 				<text >人头金额</text>
 			</view>
 			<view class="score-board-text1">
-				<text >是否关闭</text>
+				<text >是否关账</text>
 			</view>
 		</view>
 		<view class="score-board-body">

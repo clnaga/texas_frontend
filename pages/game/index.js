@@ -113,7 +113,7 @@ Page({
       })
     }
   },
-  
+
   // +2
   showAdd2Dialog(e) {
     const { key } = e.currentTarget.dataset;
@@ -125,7 +125,7 @@ Page({
   },
   add2() {
     const app = getApp()
-    
+
     const roomCode = app.globalData.userinfo.curRoomCode
     add2(roomCode).then(respData => {
       get_room_info(roomCode).then(respData => {
@@ -158,7 +158,7 @@ Page({
   },
   sub2() {
     const app = getApp()
-    
+
     const roomCode = app.globalData.userinfo.curRoomCode
     sub2(roomCode).then(respData => {
       get_room_info(roomCode).then(respData => {
@@ -180,11 +180,11 @@ Page({
       });
     })
   },
-  
+
   // 锁定/解锁房间 
   roomStatusChange() {
     const app = getApp()
-    
+
     const roomCode = app.globalData.userinfo.curRoomCode
     const roomStatus = this.data.roomStatus == '0' ? '1' : '0'
     if (roomStatus == '1') {
@@ -217,7 +217,7 @@ Page({
       })
     }
   },
-  
+
   // 输入当前筹码
   onFinCashChange(e) {
     this.setData({
@@ -236,7 +236,7 @@ Page({
   },
   onConfirm: function () {
     const app = getApp()
-    
+
     const roomCode = app.globalData.userinfo.curRoomCode
     submit_fin_cash(roomCode, this.data.finCash).then(respData => {
       this.setData({ popupVisible: false });
@@ -257,21 +257,16 @@ Page({
         content: error.msg,
       });
     })
-    
+
   },
-  
+
   // 计算分摊
-  showCalcAmountDialog(e) {
-    const { key } = e.currentTarget.dataset;
-    this.setData({ [key]: true, dialogKey: key });
-  },
   closeCalcAmountDialog() {
-    const { dialogKey } = this.data;
-    this.setData({ [dialogKey]: false });
+    this.setData({ showCalcAmountConfirm: false });
   },
   calcAmount() {
     const app = getApp()
-    
+
     const roomCode = app.globalData.userinfo.curRoomCode
     if (roomCode == undefined) {
       Message.info({
@@ -282,7 +277,38 @@ Page({
         content: '计算分摊，房间编码必填，检查检查',
       });
     }
-    calculate_amount(roomCode).then(respData => {
+    calculate_amount(roomCode, "N").then(respData => {
+      if (respData.code == 400) {
+        this.setData({
+          showCalcAmountConfirm: true,
+          calcAmountContent: respData.msg + '\n\n' + '是否平摊差值'
+        })
+      } else {
+        get_room_info(roomCode).then(respData => {
+          this.setData({
+            showCalcAmountConfirm: false,
+            roomData: respData,
+            playerName: getApp().globalData.userinfo.name
+          });
+        }).catch(error => {
+          console.log(error);
+        })
+      }
+    }).catch(error => {
+      Message.info({
+        context: this,
+        offset: [10, 32],
+        duration: 2000,
+        single: false,
+        content: error.msg,
+      });
+    })
+  },
+  confirmCalcAmount() {
+    const app = getApp()
+
+    const roomCode = app.globalData.userinfo.curRoomCode
+    calculate_amount(roomCode, "Y").then(respData => {
       get_room_info(roomCode).then(respData => {
         this.setData({
           showCalcAmountConfirm: false,
@@ -314,7 +340,7 @@ Page({
   },
   deletePlayer(e) {
     const app = getApp()
-    
+
     const roomCode = app.globalData.userinfo.curRoomCode
     delete_player(roomCode, this.data.playerId).then(respData => {
       get_room_info(roomCode).then(respData => {

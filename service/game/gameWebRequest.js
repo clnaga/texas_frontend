@@ -158,10 +158,11 @@ export function submit_fin_cash(roomCode, finCash) {
 }
 
 // 计算分摊金额
-export function calculate_amount(roomCode) {
+export function calculate_amount(roomCode, adjustmentFlag) {
     const url = reqUrl.urlCalculateAmount
     const data = {
-        roomCode: roomCode
+        roomCode: roomCode,
+        adjustmentFlag: adjustmentFlag,
     }
     return new Promise((resolve, reject) => {
         func_post_request(url, data, function (resp, error) {
@@ -169,10 +170,12 @@ export function calculate_amount(roomCode) {
                 console.log("Error: ", error)
                 reject(error)
             } else {
-                if (resp.code != 200) {
-                    reject(resp)
+                if (resp.code == 400) {
+                    resolve(resp)
+                } else if (resp.code == 200) {
+                    resolve(resp.data)
                 } else {
-                    resolve(resp.data)                    
+                    reject(resp)
                 }
             }
         })
