@@ -2,6 +2,18 @@
 <scroll-view class="scrollarea" scroll-y type="list">
 	<t-message id="t-message" />
 	<t-toast id="t-toast" />
+	<t-popup
+	 visible="{{enterRoomPopupVisible}}"
+	 placement="center"
+	 usingCustomNavbar
+	 bind:visible-change="onEnterRoomVisibleChange"
+	>
+		<view class="popup-container">
+			<text class="enterRoomText">是否加入该房间</text>
+			<t-button variant="primary" block bind:tap="onConfirm">确定
+			</t-button>
+		</view>
+	</t-popup>
 
 	<view class="room-header">
 		<view class="example-search">
@@ -74,7 +86,7 @@
 		</view>
 		<view class="score-board-body">
 			<block wx:for="{{roomInfoList}}" wx:key="id">
-				<view class="score-board-item" bind:tap="showPopup" data-item="{{item}}">
+				<view class="score-board-item" bind:tap="enterRoomShowPopup" data-item="{{item}}">
 					<view class="score-board-text2">
 						<text >{{item.code}}</text>
 					</view>

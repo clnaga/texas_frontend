@@ -6,6 +6,7 @@ Page({
   data: {
     tabPanelstyle: 'display:flex;justify-content:center;align-items:center;min-height: 500px',
     popupVisible: false,
+    enterRoomPopupVisible: false,
     popupJoinRoomVisible: false,
 
     popupRoomCode: '',
@@ -106,7 +107,10 @@ Page({
         join_room(roomCode).then(respData => {
           this.setData({
             popupVisible: false,
+            enterRoomPopupVisible: false,
             "roomEditInfo.roomCode": '',
+            "roomEditInfo.roomHeadCount": '',
+            "roomEditInfo.roomHeadAmount": '',
           });
           getApp().globalData.userinfo.curRoomCode = roomCode;
           wx.switchTab({
@@ -125,6 +129,44 @@ Page({
         });
       })
     }
+  },
+  enterRoomShowPopup: function (e) {
+    if (e.currentTarget.dataset.item == undefined) {
+      this.setData({ enterRoomPopupVisible: true });
+      return;
+    }
+    if (e.currentTarget.dataset.item.closeFlag === 1) {
+      Toast({
+        context: this,
+        selector: '#t-toast',
+        message: '关闭的房间不可再加入房间',
+      });
+      return;
+    }
+
+    if (e.currentTarget.dataset.item.ownerOpenId == getApp().globalData.userinfo.token) {
+      this.setData({
+        popupVisible: true,
+        "roomEditInfo.roomHeadCount": e.currentTarget.dataset.item.headCount,
+        "roomEditInfo.roomHeadAmount": e.currentTarget.dataset.item.headAmount,
+        popupRoomCode: e.currentTarget.dataset.item.code,
+      });
+    } else {
+      this.setData({
+        enterRoomPopupVisible: true,
+        "roomEditInfo.roomHeadCount": e.currentTarget.dataset.item.headCount,
+        "roomEditInfo.roomHeadAmount": e.currentTarget.dataset.item.headAmount,
+        popupRoomCode: e.currentTarget.dataset.item.code,
+      });
+    }
+  },
+  onEnterRoomVisibleChange(e) {
+    this.setData({
+      enterRoomPopupVisible: e.detail.visible,
+      "roomEditInfo.roomHeadCount": '',
+      "roomEditInfo.roomHeadAmount": '',
+      popupRoomCode: '',
+    });
   },
 
   // 加入房间
