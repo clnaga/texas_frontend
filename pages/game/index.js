@@ -363,4 +363,9 @@ Page({
     })
   },
 
+  // 悬浮框刷新
+  flushPage() {
+    this.onShow()
+  },
+
 })
