@@ -278,7 +278,7 @@ Page({
       });
     }
     calculate_amount(roomCode, "N").then(respData => {
-      if (respData.code == 400) {
+      if (respData != null && respData.code == 400) {
         this.setData({
           showCalcAmountConfirm: true,
           calcAmountContent: respData.msg + '\n\n' + '是否平摊差值'
